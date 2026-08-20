@@ -48,42 +48,41 @@ class AI:
 
     def ask_ai(self, image_name):
         image = self.get_photo(image_name)
+        if not image:
+            return None
 
-        prompt = """
-        Rozwiąż zadanie widoczne na zrzucie ekranu. Zwróć odpowiedź WYŁĄCZNIE w postaci surowego kodu JSON. 
-        NIE używaj formatowania Markdown (nie dodawaj ```json na początku ani ``` na końcu).
+        img_width, img_height = image.size
 
-        Zasady:
-        1. Poprawnych odpowiedzi może być kilka, jedna lub zero.
-        2. Współrzędne (x, y) w obiekcie "dots" podawaj TYLKO dla poprawnych odpowiedzi. 
-        3. Współrzędne mają wskazywać na środek pola wyboru (checkboxa) lub środek tekstu poprawnej odpowiedzi.
-        4. Jeżeli na zrzucie ekranu znajduje się więcej niż jedno pytanie, absolutnie NIE zwracaj listy obiektów (tablicy). Zwróć TYLKO JEDEN główny obiekt JSON.
-        5. W przypadku wielu pytań na jednym obrazie, połącz wszystkie poprawne odpowiedzi i umieść ich współrzędne w jednej, wspólnej liście "dots". Pola "question" i "answers" mogą wtedy dotyczyć pierwszego pytania lub stanowić podsumowanie.
+        prompt = f"""
+                Rozwiąż zadanie widoczne na zrzucie ekranu. Zwróć odpowiedź WYŁĄCZNIE w postaci surowego kodu JSON. 
+                NIE używaj formatowania Markdown (nie dodawaj ```json na początku ani ``` na końcu).
 
-        Zastosuj się DOKŁADNIE do poniższego szablonu:
-        {
-          "question_nr": 1,
-          "resolution": "1920x1080",
-          "question": "Wpisz tutaj treść pytania (jeśli jest ich więcej, wpisz treść pierwszego)",
-          "answers": [
-            "Treść pierwszej odpowiedzi",
-            "Treść drugiej odpowiedzi",
-            "Treść trzeciej odpowiedzi"
-          ],
-          "dots": [
-            {
-              "x": 960,
-              "y": 540,
-              "description": "Dlaczego ta odpowiedź na pierwsze pytanie jest poprawna"
-            },
-            {
-              "x": 100,
-              "y": 150,
-              "description": "Dlaczego ta odpowiedź na drugie pytanie jest poprawna"
-            }
-          ]
-        }
-        """
+                Zasady:
+                1. Poprawnych odpowiedzi może być kilka, jedna lub zero.
+                2. Współrzędne (x, y) w obiekcie "dots" podawaj TYLKO dla poprawnych odpowiedzi. 
+                3. Współrzędne mają wskazywać na środek pola wyboru (checkboxa) lub środek tekstu poprawnej odpowiedzi.
+                4. Jeżeli na zrzucie ekranu znajduje się więcej niż jedno pytanie, absolutnie NIE zwracaj listy obiektów (tablicy). Zwróć TYLKO JEDEN główny obiekt JSON.
+                5. W przypadku wielu pytań na jednym obrazie, połącz wszystkie poprawne odpowiedzi i umieść ich współrzędne w jednej, wspólnej liście "dots". Pola "question" i "answers" mogą wtedy dotyczyć pierwszego pytania lub stanowić podsumowanie.
+
+                Zastosuj się DOKŁADNIE do poniższego szablonu:
+                {{
+                  "question_nr": 1,
+                  "resolution": "{img_width}x{img_height}",
+                  "question": "Wpisz tutaj treść pytania (jeśli jest ich więcej, wpisz treść pierwszego)",
+                  "answers": [
+                    "Treść pierwszej odpowiedzi",
+                    "Treść drugiej odpowiedzi",
+                    "Treść trzeciej odpowiedzi"
+                  ],
+                  "dots": [
+                    {{
+                      "x": {int(img_width / 2)},
+                      "y": {int(img_height / 2)},
+                      "description": "Treść odpowiedzi oraz dlaczego ta odpowiedź na pierwsze pytanie jest poprawna"
+                    }}
+                  ]
+                }}
+                """
 
         if image:
             for i in range(3):
@@ -100,5 +99,5 @@ class AI:
                         )
                     )
                     return response
-                except TimeoutError as e:
+                except Exception as e:
                     print(i, e)

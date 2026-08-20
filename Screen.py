@@ -58,7 +58,7 @@ class Screen(QWidget):
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setBrush(QBrush(QColor(0, 0, 0)))
+        painter.setBrush(QBrush(QColor(255, 255, 255)))
         painter.setPen(Qt.PenStyle.NoPen)
         dot_radius = 5
 
