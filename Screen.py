@@ -7,6 +7,7 @@ import json
 
 class Screen(QWidget):
     ai_signal = pyqtSignal(str)
+    clear_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -15,6 +16,7 @@ class Screen(QWidget):
         self.screen_height = 0
 
         self.ai_signal.connect(self.response_analysis)
+        self.clear_signal.connect(self.clear_dots)
         self.init_ui()
 
     def init_ui(self):
@@ -31,6 +33,10 @@ class Screen(QWidget):
 
     def update_dots(self, new_dots: list):
         self.dots = new_dots
+        self.update()
+
+    def clear_dots(self):
+        self.dots = []
         self.update()
 
     def response_analysis(self, response_text):
