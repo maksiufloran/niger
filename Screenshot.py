@@ -1,7 +1,9 @@
 from pathlib import Path
 import mss
 from pynput import keyboard
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Screenshot:
     def __init__(self, path, hot_key, file_name_prefix, on_screenshot_taken=None):
@@ -11,6 +13,7 @@ class Screenshot:
         self.last_screenshot = None
         self.on_screenshot_taken = on_screenshot_taken # z klasie AI
         self.listener = None
+        logger.info('init')
 
     def take_screenshot(self):
         folder_path = Path(__file__).resolve().parent / self.folder_name
@@ -23,17 +26,24 @@ class Screenshot:
         with mss.MSS() as sct:
             file = sct.shot(mon=1, output=str(output_path)) # temp only monitor 1
             self.last_screenshot = file
+            logger.info('screenshot taken')
 
             if self.on_screenshot_taken:
                 self.on_screenshot_taken(file)
 
     def on_press(self, key):
         try:
-            if key.char == self.hot_key:
-                self.take_screenshot()
-        except AttributeError:
-            if key.name == self.hot_key:
-                self.take_screenshot()
+            try:
+                if key.char == self.hot_key:
+                    self.take_screenshot()
+                    logger.info('key pressed')
+            except AttributeError:
+                if key.name == self.hot_key:
+                    self.take_screenshot()
+                    logger.info('key pressed')
+        except Exception as e:
+            logger.error(e)
+
 
     def start(self, blocking=True):
         self.listener = keyboard.Listener(on_press=self.on_press)

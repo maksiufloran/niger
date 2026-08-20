@@ -3,6 +3,9 @@ from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QPainter, QBrush, QColor
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Screen(QWidget):
@@ -19,6 +22,8 @@ class Screen(QWidget):
         self.clear_signal.connect(self.clear_dots)
         self.init_ui()
 
+        logger.info('init')
+
     def init_ui(self):
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint |
@@ -34,23 +39,44 @@ class Screen(QWidget):
     def update_dots(self, new_dots: list):
         self.dots = new_dots
         self.update()
+        logger.info('update_dots')
 
     def clear_dots(self):
         self.dots = []
         self.update()
+        logger.info('clear_dots')
 
     def response_analysis(self, response_text):
         temp_dots = []
         try:
             data = json.loads(response_text)
-            json_dots = data.get('dots', [])
-            for dot in json_dots:
-                temp_dots.append((dot['x'], dot['y']))
-        except (json.JSONDecodeError, KeyError) as e:
+            # Pobieramy teraz listę 'answers' zamiast 'dots'
+            answers = data.get('answers', [])
+
+            for item in answers:
+                box = item.get('box_2d')
+                if box and len(box) == 4:
+                    ymin, xmin, ymax, xmax = box
+
+                    # 1. Przeliczenie skali 0-1000 na piksele Twojego monitora
+                    real_xmin = (xmin / 1000.0) * self.screen_width
+                    real_xmax = (xmax / 1000.0) * self.screen_width
+                    real_ymin = (ymin / 1000.0) * self.screen_height
+                    real_ymax = (ymax / 1000.0) * self.screen_height
+
+                    # 2. Wyznaczenie geometrycznego środka ramki
+                    center_x = int((real_xmin + real_xmax) / 2)
+                    center_y = int((real_ymin + real_ymax) / 2)
+
+                    temp_dots.append((center_x, center_y))
+
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            logger.error(f"Błąd parsowania: {e}")
             print(f"Błąd parsowania: {e}")
             temp_dots.append((self.screen_width - 10, self.screen_height - 10))
 
         self.update_dots(temp_dots)
+        logger.info('response_analysis')
 
     def paintEvent(self, event):
         if not self.dots:
@@ -58,13 +84,16 @@ class Screen(QWidget):
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setBrush(QBrush(QColor(255, 255, 255)))
+
+        # Ustawiłeś kolor zielony w RGB (0, 255, 0, 120), jest super.
+        painter.setBrush(QBrush(QColor(0, 255, 0, 120)))
         painter.setPen(Qt.PenStyle.NoPen)
+
+        # Zmieniono promień z 5 na 15 dla lepszej widoczności znacznika
         dot_radius = 5
 
         for x, y in self.dots:
             painter.drawEllipse(x - dot_radius, y - dot_radius, dot_radius * 2, dot_radius * 2)
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
