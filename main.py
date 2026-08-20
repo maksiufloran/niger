@@ -14,7 +14,7 @@ if __name__ == '__main__':
         sc.ai_signal.emit(response.text)
 
 
-    gem = AI("ss", handle_ai_response)
+    gem = AI("gemini-3.1-flash-lite", "ss", handle_ai_response)
     ss = Screenshot("ss", "f4", "test", on_screenshot_taken=gem.received_last_photo)
 
     ss.start(blocking=False)

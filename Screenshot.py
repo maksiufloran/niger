@@ -53,4 +53,3 @@ if __name__ == "__main__":
     sc = Screenshot("ss", "f4", "test", on_screenshot_taken=gem.received_last_photo)
     sc.start(blocking=True)
 
-

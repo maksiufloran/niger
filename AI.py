@@ -7,7 +7,8 @@ import threading
 
 
 class AI:
-    def __init__(self, folder_name, response_analysis):
+    def __init__(self, model, folder_name, response_analysis):
+        self.model = model
         self.folder_name = folder_name
         load_dotenv()
         self.client = genai.Client()
@@ -88,7 +89,7 @@ class AI:
             for i in range(3):
                 try:
                     response = self.client.models.generate_content(
-                        model="gemini-3.6-flash",
+                        model=self.model,
                         contents=[
                             image,
                             prompt
