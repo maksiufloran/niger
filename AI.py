@@ -39,6 +39,7 @@ class AI:
             print(self.last_response.text)
             print(response.usage_metadata.prompt_token_count)
             print(response.usage_metadata.total_token_count)
+            logger.info(f"Used token {response.usage_metadata.total_token_count}")
             if self.response_analysis:
                 self.response_analysis(response)
 
