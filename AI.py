@@ -55,13 +55,15 @@ class AI:
         Zasady:
         1. Poprawnych odpowiedzi może być kilka, jedna lub zero.
         2. Współrzędne (x, y) w obiekcie "dots" podawaj TYLKO dla poprawnych odpowiedzi. 
-        3. Współrzędne powinny wskazywać na środek pola wyboru (checkboxa) lub środek tekstu poprawnej odpowiedzi.
+        3. Współrzędne mają wskazywać na środek pola wyboru (checkboxa) lub środek tekstu poprawnej odpowiedzi.
+        4. Jeżeli na zrzucie ekranu znajduje się więcej niż jedno pytanie, absolutnie NIE zwracaj listy obiektów (tablicy). Zwróć TYLKO JEDEN główny obiekt JSON.
+        5. W przypadku wielu pytań na jednym obrazie, połącz wszystkie poprawne odpowiedzi i umieść ich współrzędne w jednej, wspólnej liście "dots". Pola "question" i "answers" mogą wtedy dotyczyć pierwszego pytania lub stanowić podsumowanie.
 
         Zastosuj się DOKŁADNIE do poniższego szablonu:
         {
           "question_nr": 1,
           "resolution": "1920x1080",
-          "question": "Wpisz tutaj treść pytania",
+          "question": "Wpisz tutaj treść pytania (jeśli jest ich więcej, wpisz treść pierwszego)",
           "answers": [
             "Treść pierwszej odpowiedzi",
             "Treść drugiej odpowiedzi",
@@ -71,12 +73,12 @@ class AI:
             {
               "x": 960,
               "y": 540,
-              "description": "Dlaczego ta odpowiedź jest poprawna"
+              "description": "Dlaczego ta odpowiedź na pierwsze pytanie jest poprawna"
             },
             {
-              "x": 960,
-              "y": 540,
-              "description": "Dlaczego ta odpowiedź jest poprawna"
+              "x": 100,
+              "y": 150,
+              "description": "Dlaczego ta odpowiedź na drugie pytanie jest poprawna"
             }
           ]
         }
@@ -86,7 +88,7 @@ class AI:
             for i in range(3):
                 try:
                     response = self.client.models.generate_content(
-                        model="gemini-3-flash-preview",
+                        model="gemini-3.6-flash",
                         contents=[
                             image,
                             prompt
