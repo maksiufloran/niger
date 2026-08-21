@@ -5,6 +5,7 @@ from AI import AI
 from Screen import Screen
 import ctypes
 import logging
+from time import sleep
 
 logging.basicConfig(
     filename="app.log",
@@ -34,6 +35,7 @@ if __name__ == '__main__':
 
     def on_screenshot_taken(file_path):
         sc.clear_signal.emit()
+        sleep(0.1)
         gem.received_last_photo(file_path)
 
     gem = AI("gemini-3.5-flash", "ss", handle_ai_response)
