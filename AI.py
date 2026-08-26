@@ -17,8 +17,13 @@ class AnswerBox(BaseModel):
     box_2d: list[int]
     description: str
 
+class AllAnswers(BaseModel):
+    answers: list[str]
+    isRight: bool
 
 class QuizResponse(BaseModel):
+    question: str
+    allAnswers: list[AllAnswers]
     analysis: str
     bgcolor: str
     answers: list[AnswerBox]
@@ -59,7 +64,12 @@ class AI:
                 print("PRZEMYŚLENIA AI (ANALIZA):")
                 print(data.get('analysis', 'Brak analizy...'))
                 print("=" * 40 + "\n")
-            except Exception:
+
+                # Zapisujemy pytanie do pliku questions.json
+                self.save_question(data, image_name)
+
+            except Exception as e:
+                logger.error(f"Błąd parsowania/zapisu JSON: {e}")
                 print(response.text)
 
             print(f"Prompt Tokens: {response.usage_metadata.prompt_token_count}")
@@ -74,6 +84,32 @@ class AI:
 
             if self.response_analysis:
                 self.response_analysis(response)
+
+    def save_question(self, question_data: dict, image_name: str, file_path="questions.json"):
+        path = Path(file_path)
+        questions = []
+
+        if path.exists():
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    content = json.load(f)
+                    if isinstance(content, list):
+                        questions = content
+            except (json.JSONDecodeError, Exception) as e:
+                logger.warning(f"Nie udało się odczytać istniejącego questions.json: {e}")
+                questions = []
+
+        entry = {
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "image": str(image_name),
+            **question_data
+        }
+        questions.append(entry)
+
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(questions, f, ensure_ascii=False, indent=2)
+
+        logger.info(f"Pytanie zapisane do {file_path}")
 
     def save_query_stats(self, model, prompt_tokens, total_tokens, file_path="tokens.csv"):
         file_exists = Path(file_path).exists()
@@ -113,10 +149,12 @@ class AI:
         sys_instruct = (
             "Jesteś precyzyjnym ekspertem rozwiązującym testy i egzaminy. "
             "Twoje zadanie to znalezienie poprawnych odpowiedzi na dostarczonym obrazie. "
-            "KROK 1: W polu 'analysis' krótko przeanalizuj widoczne opcje, zwracając uwagę na podchwytliwe słowa. "
-            "KROK 2: W polu 'bgcolor' podaj w formacie HEX (np. '#00FF00', '#FF0000') kolor znacznika, który będzie o 50% ciemniejszy od koloru tła w przypadku tła jasnego lub 0 50% jaśniejszy od koloru tła w przypadku tła ciemnego. "
-            "KROK 2: W polu 'answers' podaj poprawne opcje. "
-            "Współrzędne podawaj ZAWSZE w znormalizowanej skali 0-1000 w formacie [ymin, xmin, ymax, xmax]."
+            "KROK 1: W polu 'question' podaj treść pytania. "
+            "KROK 2: W polu 'allAnswers' podaj wszystkie odpowiedzi. "
+            "KROK 3: W polu 'analysis' krótko przeanalizuj widoczne opcje, zwracając uwagę na podchwytliwe słowa. "
+            "KROK 4: W polu 'bgcolor' podaj w formacie HEX (np. '#00FF00', '#FF0000') kolor znacznika, który będzie o 50% ciemniejszy od koloru tła w przypadku tła jasnego lub o 50% jaśniejszy od koloru tła w przypadku tła ciemnego. "
+            "KROK 5: W polu 'answers' podaj poprawne opcje. "
+            "Współrzędne podawaj ZAWSZE w znormalizowanej skali 0-1000 w formacie [ymin, xmin, ymax, xmax]. Postaraj się podać miejsce checkboxa poprawnej odpowiedzi. Jeżeli takiego nie ma wskaż środek odpowiedzi."
         )
 
         for i in range(3):

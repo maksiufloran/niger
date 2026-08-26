@@ -39,10 +39,10 @@ if __name__ == '__main__':
     def manual_clear():
         sc.clear_signal.emit()
 
-    gem = AI("gemini-3.1-pro-preview", "ss", handle_ai_response)
+    gem = AI("gemini-3.6-flash", "ss", handle_ai_response)
     ss = Screenshot("ss",
                     "shift",
-                    "f4",
+                    "ctrl_l",
                     "test",
                     on_screenshot_taken=on_screenshot_taken,
                     on_clear_requested=manual_clear)

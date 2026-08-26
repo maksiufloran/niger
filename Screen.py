@@ -66,13 +66,12 @@ class Screen(QWidget):
                 if box and len(box) == 4:
                     ymin, xmin, ymax, xmax = box
 
-                    # 1. Przeliczenie skali 0-1000 na piksele Twojego monitora
+                    # 1. Przeliczenie skali 0-1000 na piksele monitora
                     real_xmin = (xmin / 1000.0) * self.screen_width
                     real_xmax = (xmax / 1000.0) * self.screen_width
                     real_ymin = (ymin / 1000.0) * self.screen_height
                     real_ymax = (ymax / 1000.0) * self.screen_height
 
-                    # 2. Wyznaczenie geometrycznego środka ramki
                     center_x = int((real_xmin + real_xmax) / 2)
                     center_y = int((real_ymin + real_ymax) / 2)
 

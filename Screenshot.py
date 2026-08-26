@@ -9,11 +9,11 @@ class Screenshot:
     def __init__(self, path, hot_key, clear_key, file_name_prefix, on_screenshot_taken=None, on_clear_requested=None):
         self.folder_name = path
         self.hot_key = hot_key
-        self.clear_key = clear_key  # NOWOŚĆ: Klawisz do czyszczenia (np. F3)
+        self.clear_key = clear_key
         self.file_name_prefix = file_name_prefix
         self.last_screenshot = None
         self.on_screenshot_taken = on_screenshot_taken
-        self.on_clear_requested = on_clear_requested  # NOWOŚĆ: Funkcja przekazywana z main.py
+        self.on_clear_requested = on_clear_requested
         self.listener = None
         logger.info('init')
 
@@ -53,7 +53,7 @@ class Screenshot:
         self.listener = keyboard.Listener(on_press=self.on_press)
         self.listener.start()
         if blocking:
-            self.listener.join()  # Blokuje, żeby skrypt nie umarł
+            self.listener.join()
 
     def get_last_screenshot(self):
         return self.last_screenshot

@@ -1,0 +1,108 @@
+[
+  {
+    "timestamp": "2026-08-26 15:56:47",
+    "image": "C:\\Users\\maksy\\PycharmProjects\\niger\\ss\\test-monitor1-ss-20.png",
+    "question": "Encja WALUTA i PAŃSTWO (z zależnością \"w państwie obowiązuje jedna waluta\") połączone są związkiem",
+    "allAnswers": [
+      {
+        "answers": [
+          "wymagającą dodatkowej tabeli łączącej"
+        ],
+        "isRight": false
+      },
+      {
+        "answers": [
+          "jeden - wiele"
+        ],
+        "isRight": true
+      },
+      {
+        "answers": [
+          "wiele - jeden"
+        ],
+        "isRight": false
+      },
+      {
+        "answers": [
+          "wiele - wiele"
+        ],
+        "isRight": false
+      }
+    ],
+    "analysis": "Jedna waluta (np. EUR, USD) może obowiązywać w wielu państwach, ale w danym państwie obowiązuje jedna waluta. Wymieniając encje w kolejności WALUTA, a następnie PAŃSTWO, relacja to 'jeden do wielu' (jeden - wiele).",
+    "bgcolor": "#808080",
+    "answers": [
+      {
+        "box_2d": [
+          329,
+          675,
+          351,
+          685
+        ],
+        "description": "jeden - wiele"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-08-26 15:57:03",
+    "image": "C:\\Users\\maksy\\PycharmProjects\\niger\\ss\\test-monitor1-ss-21.png",
+    "question": "Jakie perspektywy projektowania są wyróżnione w modelu procesów projektowania MSF:",
+    "allAnswers": [
+      {
+        "answers": [
+          "koncepcyjny"
+        ],
+        "isRight": true
+      },
+      {
+        "answers": [
+          "logiczny"
+        ],
+        "isRight": true
+      },
+      {
+        "answers": [
+          "fizyczny"
+        ],
+        "isRight": true
+      },
+      {
+        "answers": [
+          "użytkowy"
+        ],
+        "isRight": false
+      }
+    ],
+    "analysis": "W modelu procesów projektowania MSF (Microsoft Solutions Framework) wyróżnia się trzy poziomy/perspektywy projektowania: koncepcyjny (Conceptual Design), logiczny (Logical Design) oraz fizyczny (Physical Design). Perspektywa \"użytkowa\" nie jest formalnie wyróżnioną osobną fazą projektowania w MSF.",
+    "bgcolor": "#7F7F7F",
+    "answers": [
+      {
+        "box_2d": [
+          278,
+          675,
+          299,
+          685
+        ],
+        "description": "koncepcyjny"
+      },
+      {
+        "box_2d": [
+          328,
+          675,
+          349,
+          685
+        ],
+        "description": "logiczny"
+      },
+      {
+        "box_2d": [
+          378,
+          675,
+          399,
+          685
+        ],
+        "description": "fizyczny"
+      }
+    ]
+  }
+]
