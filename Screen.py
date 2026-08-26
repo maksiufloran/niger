@@ -18,6 +18,9 @@ class Screen(QWidget):
         self.screen_width = 0
         self.screen_height = 0
 
+        self.dots_color = QColor("#00FF00")
+        self.dots_color.setAlphaF(120)
+
         self.ai_signal.connect(self.response_analysis)
         self.clear_signal.connect(self.clear_dots)
         self.init_ui()
@@ -50,7 +53,12 @@ class Screen(QWidget):
         temp_dots = []
         try:
             data = json.loads(response_text)
-            # Pobieramy teraz listę 'answers' zamiast 'dots'
+
+            bg_hex = data.get('bgcolor', "#00FF00")
+            self.dots_color = QColor(bg_hex)
+            self.dots_color.setAlpha(120)
+
+
             answers = data.get('answers', [])
 
             for item in answers:
@@ -85,11 +93,9 @@ class Screen(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # Ustawiłeś kolor zielony w RGB (0, 255, 0, 120), jest super.
-        painter.setBrush(QBrush(QColor(0, 255, 0, 120)))
+        painter.setBrush(QBrush(self.dots_color))
         painter.setPen(Qt.PenStyle.NoPen)
 
-        # Zmieniono promień z 5 na 15 dla lepszej widoczności znacznika
         dot_radius = 5
 
         for x, y in self.dots:

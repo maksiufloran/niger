@@ -36,8 +36,16 @@ if __name__ == '__main__':
         sc.clear_signal.emit()
         gem.received_last_photo(file_path)
 
+    def manual_clear():
+        sc.clear_signal.emit()
+
     gem = AI("gemini-3.1-pro-preview", "ss", handle_ai_response)
-    ss = Screenshot("ss", "f4", "test", on_screenshot_taken=on_screenshot_taken)
+    ss = Screenshot("ss",
+                    "shift",
+                    "f4",
+                    "test",
+                    on_screenshot_taken=on_screenshot_taken,
+                    on_clear_requested=manual_clear)
 
     ss.start(blocking=False)
 

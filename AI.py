@@ -20,6 +20,7 @@ class AnswerBox(BaseModel):
 
 class QuizResponse(BaseModel):
     analysis: str
+    bgcolor: str
     answers: list[AnswerBox]
 
 
@@ -113,6 +114,7 @@ class AI:
             "Jesteś precyzyjnym ekspertem rozwiązującym testy i egzaminy. "
             "Twoje zadanie to znalezienie poprawnych odpowiedzi na dostarczonym obrazie. "
             "KROK 1: W polu 'analysis' krótko przeanalizuj widoczne opcje, zwracając uwagę na podchwytliwe słowa. "
+            "KROK 2: W polu 'bgcolor' podaj w formacie HEX (np. '#00FF00', '#FF0000') kolor znacznika, który będzie o 50% ciemniejszy od koloru tła w przypadku tła jasnego lub 0 50% jaśniejszy od koloru tła w przypadku tła ciemnego. "
             "KROK 2: W polu 'answers' podaj poprawne opcje. "
             "Współrzędne podawaj ZAWSZE w znormalizowanej skali 0-1000 w formacie [ymin, xmin, ymax, xmax]."
         )

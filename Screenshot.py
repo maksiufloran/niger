@@ -6,12 +6,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Screenshot:
-    def __init__(self, path, hot_key, file_name_prefix, on_screenshot_taken=None):
+    def __init__(self, path, hot_key, clear_key, file_name_prefix, on_screenshot_taken=None, on_clear_requested=None):
         self.folder_name = path
         self.hot_key = hot_key
+        self.clear_key = clear_key  # NOWOŚĆ: Klawisz do czyszczenia (np. F3)
         self.file_name_prefix = file_name_prefix
         self.last_screenshot = None
-        self.on_screenshot_taken = on_screenshot_taken # z klasie AI
+        self.on_screenshot_taken = on_screenshot_taken
+        self.on_clear_requested = on_clear_requested  # NOWOŚĆ: Funkcja przekazywana z main.py
         self.listener = None
         logger.info('init')
 
@@ -33,17 +35,19 @@ class Screenshot:
 
     def on_press(self, key):
         try:
-            try:
-                if key.char == self.hot_key:
-                    self.take_screenshot()
-                    logger.info('key pressed')
-            except AttributeError:
-                if key.name == self.hot_key:
-                    self.take_screenshot()
-                    logger.info('key pressed')
+            key_name = key.name if hasattr(key, 'name') else key.char
+
+            if key_name == self.hot_key:
+                self.take_screenshot()
+                logger.info('Screenshot hotkey pressed')
+
+            elif key_name == self.clear_key:
+                if self.on_clear_requested:
+                    self.on_clear_requested()
+                logger.info('Clear hotkey pressed')
+
         except Exception as e:
             logger.error(e)
-
 
     def start(self, blocking=True):
         self.listener = keyboard.Listener(on_press=self.on_press)
